@@ -1,13 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { FronteggProvider } from "@frontegg/react";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const contextOptions = {
+  baseUrl: `${process.env.REACT_APP_BASE_URL}`,
+  clientId: `${process.env.REACT_APP_CLIENT_ID}`,
+  appId: "",
+};
+// console.log(process.env.REACT_APP_CLIENT_ID);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <FronteggProvider contextOptions={contextOptions} hostedLoginBox={false}>
+      <App />
+    </FronteggProvider>
   </React.StrictMode>
 );
 
