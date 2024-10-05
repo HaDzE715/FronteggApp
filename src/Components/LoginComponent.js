@@ -73,10 +73,10 @@ const Login = () => {
               What is my access token?
             </button>
           </div>
-          <div>
-            <button onClick={() => logout()}>Click to logout</button>
-          </div>
           <button onClick={handleClick}>Settings</button>
+          <div>
+            <button onClick={() => logout()}>Logout</button>
+          </div>
           <TenantDropDown />
         </div>
       )}
