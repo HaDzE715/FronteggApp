@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-const TenantDropDown = () => {
+const TenantDropDown = ({ user }) => {
   const [tenants, setTenants] = useState([]);
   const [selectedTenant, setSelectedTenant] = useState();
   const token = `${process.env.REACT_APP_TOKEN}`;
   const apiUrl = `${process.env.REACT_APP_TENANTS_API}`;
+  const setTenantUrl = `${process.env.REACT_APP_UPDATE_USER}`;
 
   const fetchTenants = useCallback(async () => {
     const options = {
@@ -29,6 +30,35 @@ const TenantDropDown = () => {
     fetchTenants();
   }, [fetchTenants]);
 
+  const getUserByEmail = async () => {
+    const email = user.email;
+    const options = {
+      method: "GET",
+      url: `${
+        process.env.REACT_APP_UPDATE_USER
+      }/email?email=${encodeURIComponent(email)}`,
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const response = await axios.request(options);
+      if (response.data && response.data.id) {
+        return response.data.id;
+      } else {
+        console.error("User ID not found in the response");
+        return null;
+      }
+    } catch (error) {
+      console.error(
+        "Error fetching user by email",
+        error.response ? error.response : error.messeage
+      );
+    }
+  };
+
   const handleTenantChange = async (e) => {
     const selectedTenantId = e.target.value;
     setSelectedTenant(e.target.value);
@@ -38,15 +68,23 @@ const TenantDropDown = () => {
       console.log("No tenant selected");
       return;
     }
+    const userId = await getUserByEmail();
+
+    if (!userId) {
+      console.error("User id not found, cannot switch tenant");
+      return;
+    }
 
     const options = {
       method: "PUT",
-      url: `${apiUrl}/${selectedTenantId}`,
+      url: `${setTenantUrl}/${userId}/tenant`,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      data: {},
+      data: {
+        tenantId: selectedTenantId,
+      },
     };
 
     try {

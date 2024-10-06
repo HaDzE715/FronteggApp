@@ -7,7 +7,7 @@ import { useEffect, useCallback } from "react";
 
 const Login = () => {
   const { user, isAuthenticated } = useAuth();
-  const token = process.env.REACT_APP_TOKEN;
+  const token = `${process.env.REACT_APP_TOKEN}`;
 
   const logout = () => {
     const baseUrl = ContextHolder.getContext().baseUrl;
@@ -68,16 +68,11 @@ const Login = () => {
           <div>
             <span>Logged in as: {user?.name}</span>
           </div>
-          <div>
-            <button onClick={() => alert(user?.accessToken)}>
-              What is my access token?
-            </button>
-          </div>
           <button onClick={handleClick}>Settings</button>
           <div>
             <button onClick={() => logout()}>Logout</button>
           </div>
-          <TenantDropDown />
+          <TenantDropDown user={user} />
         </div>
       )}
     </div>
